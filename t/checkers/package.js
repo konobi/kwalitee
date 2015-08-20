@@ -109,3 +109,41 @@ tap.test('package has sufficient description', function(t) {
 
 });
 
+tap.test('package has spdx licensing', function(t) {
+
+  async.series([
+    function(cb){
+
+      var obj = new PackageChecker('../../t/checkers/package/without-spdx-license.json');
+      obj.score(function(score) {
+        t.equals(score.scores.package_has_spdx_license[0], 0.0, 
+            'Correct scoring for package without spdx license');
+        t.equals(score.scores.package_has_spdx_license[1], 4.0, 
+            'Correct possible score for package without spdx license');
+        cb();
+      });
+    },
+    function(cb){
+
+      var obj2 = new PackageChecker('../../t/checkers/package/with-spdx-not-osi-license.json');
+      obj2.score(function(score) {
+        t.equals(score.scores.package_has_spdx_license[0], 3.0, 
+            'Correct scoring for package with spdx license (non-osi-approved)');
+        cb();
+      });
+    },
+    function(cb) {
+      var obj3 = new PackageChecker('../../t/checkers/package/with-spdx-osi-license.json');
+      obj3.score(function(score) {
+        t.equals(score.scores.package_has_spdx_license[0], 4.0, 
+            'Correct scoring for package with spdx license (osi-approved)');
+        cb();
+      });
+
+    }
+  ], function(err) {
+    t.done();
+  });
+
+});
+
