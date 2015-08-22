@@ -170,4 +170,32 @@ tap.test('package has valid semver', function(t) {
 
 });
 
+tap.test('package has minimum keywords', function(t) {
+
+  async.series([
+    function(cb){
+
+      var obj = new PackageChecker('../../t/checkers/package/without-minimum-keywords.json');
+      obj.score(function(score) {
+        t.equals(score.scores.package_has_minimum_keywords[0], 0.0, 
+            'Correct scoring for package without minimum keywords');
+        t.equals(score.scores.package_has_minimum_keywords[1], 2.0, 
+            'Correct possible score for package without minimum keywords');
+        cb();
+      });
+    },
+    function(cb){
+
+      var obj2 = new PackageChecker('../../t/checkers/package/with-minimum-keywords.json');
+      obj2.score(function(score) {
+        t.equals(score.scores.package_has_minimum_keywords[0], 2.0, 
+            'Correct scoring for package with minimum keywords');
+        cb();
+      });
+    },
+  ], function(err) {
+    t.done();
+  });
+
+});
 

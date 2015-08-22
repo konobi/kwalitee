@@ -6,7 +6,7 @@ var check = new kwalitee({ path: '../../t/data/basic-operation/' });
 
 check.init(function() {
   check.score(function (scores) {
-    tap.equals(scores.overall.total, 14.0, 'got the correct overall');
+    tap.equals(scores.overall.total, 16.0, 'got the correct overall');
   });
 });
 
