@@ -141,3 +141,33 @@ tap.test('package has spdx licensing', function(t) {
 
 });
 
+tap.test('package has valid semver', function(t) {
+
+  async.series([
+    function(cb){
+
+      var obj = new PackageChecker('../../t/checkers/package/without-valid-semver.json');
+      obj.score(function(score) {
+        t.equals(score.scores.package_has_valid_semver[0], 0.0, 
+            'Correct scoring for package without valid semver');
+        t.equals(score.scores.package_has_valid_semver[1], 6.0, 
+            'Correct possible score for package without valid semver');
+        cb();
+      });
+    },
+    function(cb){
+
+      var obj2 = new PackageChecker('../../t/checkers/package/with-valid-semver.json');
+      obj2.score(function(score) {
+        t.equals(score.scores.package_has_valid_semver[0], 6.0, 
+            'Correct scoring for package with valid semver');
+        cb();
+      });
+    },
+  ], function(err) {
+    t.done();
+  });
+
+});
+
+
