@@ -36,8 +36,6 @@ tap.test('package does not include name', function(t) {
       obj2.score(function(score) {
         t.equals(score.scores.packagename_does_not_include_node[0], 1.0, 
             'Correct scoring for package without node in name');
-        t.equals(score.scores.packagename_does_not_include_node[1], 1.0, 
-            'Correct possible score for package without node in name');
         cb();
       });
     }
@@ -67,8 +65,6 @@ tap.test('package has repo', function(t) {
       obj2.score(function(score) {
         t.equals(score.scores.package_has_repo[0], 1.0, 
             'Correct scoring for package with repo');
-        t.equals(score.scores.package_has_repo[1], 1.0, 
-            'Correct possible score for package with repo');
         cb();
       });
     }
@@ -98,8 +94,6 @@ tap.test('package has sufficient description', function(t) {
       obj2.score(function(score) {
         t.equals(score.scores.package_has_sufficient_description[0], 2.0, 
             'Correct scoring for package with repo');
-        t.equals(score.scores.package_has_sufficient_description[1], 2.0, 
-            'Correct possible score for package with repo');
         cb();
       });
     }
