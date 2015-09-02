@@ -62,10 +62,10 @@ if(print_usage) {
 
 function print_scores (scores) { 
   if(!argv.verbose) {
-    console.log("Kwalitee Score: " + (scores.overall.score / scores.overall.total));
+    console.log("Kwalitee Score: " + ((scores.overall.score / scores.overall.total) * 100) + "%");
     console.log("    (score/total): " + scores.overall.score + " / " + scores.overall.total);
   } else {
-    console.log("Kwalitee Score: " + (scores.overall.score / scores.overall.total));
+    console.log("Kwalitee Score: " + ((scores.overall.score / scores.overall.total) * 100) + "%");
 
     scores.checkers_used.forEach(function(item) {
       console.log("\n" + item + ":");
