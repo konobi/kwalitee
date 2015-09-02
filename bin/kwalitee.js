@@ -53,12 +53,12 @@ if(print_usage) {
     script_name);
   
   console.log(usage);
+} else {
+  var foo = new kwal({ "path": path.resolve(directory) });
+  foo.init(function(){
+    foo.score(print_scores);
+  });
 }
-
-var foo = new kwal({ "path": path.resolve(directory) });
-foo.init(function(){
-  foo.score(print_scores);
-});
 
 function print_scores (scores) { 
   if(!argv.verbose) {

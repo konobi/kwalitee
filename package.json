@@ -18,5 +18,8 @@
     "minimist": "^1.2.0",
     "semver": "^5.0.1",
     "spdx-licenses": "0.0.3"
+  },
+  "bin": {
+    "kwalitee": "bin/kwalitee.js"
   }
 }
