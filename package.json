@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "async": "^1.4.2",
+    "minimist": "^1.2.0",
     "semver": "^5.0.1",
     "spdx-licenses": "0.0.3"
   }
