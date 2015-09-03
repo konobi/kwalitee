@@ -199,3 +199,32 @@ tap.test('package has minimum keywords', function(t) {
 
 });
 
+tap.test('package has author', function(t) {
+
+  async.series([
+    function(cb){
+
+      var obj = new PackageChecker('../../t/checkers/package/without-author.json');
+      obj.score(function(score) {
+        t.equals(score.scores.package_has_author[0], 0.0, 
+            'Correct scoring for package without author');
+        t.equals(score.scores.package_has_author[1], 1.0, 
+            'Correct possible score for package without author');
+        cb();
+      });
+    },
+    function(cb){
+
+      var obj2 = new PackageChecker('../../t/checkers/package/with-author.json');
+      obj2.score(function(score) {
+        t.equals(score.scores.package_has_author[0], 1.0, 
+            'Correct scoring for package with author');
+        cb();
+      });
+    },
+  ], function(err) {
+    t.done();
+  });
+
+});
+
