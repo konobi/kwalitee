@@ -1,0 +1,6 @@
+{
+    "name": "withtestscript",
+    "scripts": {
+        "test": "echo 'we have some sort of test script here'"
+    }
+}

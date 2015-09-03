@@ -4,7 +4,7 @@
   "description": "Kwalitee scoring for npm packages, providing tooling to help package authors",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tap t"
   },
   "author": "",
   "license": "MIT",

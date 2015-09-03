@@ -228,3 +228,32 @@ tap.test('package has author', function(t) {
 
 });
 
+tap.test('package has test script', function(t) {
+
+  async.series([
+    function(cb){
+
+      var obj = new PackageChecker('../../t/checkers/package/without-test-script.json');
+      obj.score(function(score) {
+        t.equals(score.scores.package_has_test_script[0], 0.0, 
+            'Correct scoring for package without test script');
+        t.equals(score.scores.package_has_test_script[1], 5.0, 
+            'Correct possible score for package without test script');
+        cb();
+      });
+    },
+    function(cb){
+
+      var obj2 = new PackageChecker('../../t/checkers/package/with-test-script.json');
+      obj2.score(function(score) {
+        t.equals(score.scores.package_has_test_script[0], 5.0, 
+            'Correct scoring for package with test script');
+        cb();
+      });
+    },
+  ], function(err) {
+    t.done();
+  });
+
+});
+
