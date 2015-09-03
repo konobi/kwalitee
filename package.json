@@ -23,5 +23,8 @@
     "kwalitee": "bin/kwalitee.js"
   },
   "repository": "github:konobi/kwalitee",
-  "keywords": [ "package", "npm", "author", "authoring", "test", "testing", "publish", "publishing" ]
+  "keywords": [ "package", "npm", "author", "authoring", "test", "testing", "publish", "publishing" ],
+  "author": {
+    "name": "Scott 'konobi' McWhirter"
+  }
 }
