@@ -1,17 +1,28 @@
 
 var tap = require('tap');
 var async = require('async');
+var path = require('path');
 
 var PackageChecker = require('../../lib/checkers/package');
+var fake_path = '../../t/checkers/package/test-dir/';
+function reset () {
+  delete require.cache[ path.resolve(fake_path) ];
+}
+function fresh (stuff) {
+  reset();
+  return new PackageChecker(fake_path, stuff);
+}
 
 tap.test('basic functionality', function(t) {
   t.type(PackageChecker, 'function', "Ensure checker is function");
 
-  var obj = new PackageChecker('../../t/checkers/package/with-node-in-name.json');
+  var obj = new PackageChecker(fake_path);
   t.type(obj, 'object', "PackageChecker is a constructor");
+  reset();
 
-  var obj2 = new PackageChecker('../../t/checkers/package/test-dir');
-  t.type(obj, 'object', "Uses package.json in directory when available");
+  var obj2 = new PackageChecker(fake_path);
+  t.type(obj2, 'object', "Uses package.json in directory when available");
+  reset();
 
   t.done();
 });
@@ -20,22 +31,28 @@ tap.test('package does not include name', function(t) {
 
   async.series([
     function(cb){
-
-      var obj = new PackageChecker('../../t/checkers/package/with-node-in-name.json');
+      var obj = fresh({
+        name: 'node-this-should-fail'   
+      });
       obj.score(function(score) {
-        t.equals(score.scores.packagename_does_not_include_node[0], 0.0, 
+        var s = score.scores;
+        t.equals( s.packagename_does_not_include_node[0], 0.0, 
             'Correct scoring for package with node in name');
-        t.equals(score.scores.packagename_does_not_include_node[1], 1.0, 
+        t.equals( s.packagename_does_not_include_node[1], 1.0, 
             'Correct possible score for package with node in name');
+
         cb();
       });
     },
     function(cb){
-
-      var obj2 = new PackageChecker('../../t/checkers/package/without-node-in-name.json');
-      obj2.score(function(score) {
-        t.equals(score.scores.packagename_does_not_include_node[0], 1.0, 
+      var obj = fresh({
+        name: 'this-is-okay-as-a-name'
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals( s.packagename_does_not_include_node[0], 1.0, 
             'Correct scoring for package without node in name');
+
         cb();
       });
     }
@@ -49,22 +66,29 @@ tap.test('package has repo', function(t) {
 
   async.series([
     function(cb){
-
-      var obj = new PackageChecker('../../t/checkers/package/without-repo.json');
+      var obj = fresh({
+        name: "without-repo"
+      });
       obj.score(function(score) {
-        t.equals(score.scores.package_has_repo[0], 0.0, 
+        var s = score.scores;
+        t.equals(s.package_has_repo[0], 0.0, 
             'Correct scoring for package without repo');
-        t.equals(score.scores.package_has_repo[1], 1.0, 
+        t.equals(s.package_has_repo[1], 1.0, 
             'Correct possible score for package without repo');
+
         cb();
       });
     },
     function(cb){
-
-      var obj2 = new PackageChecker('../../t/checkers/package/with-repo.json');
-      obj2.score(function(score) {
-        t.equals(score.scores.package_has_repo[0], 1.0, 
+      var obj = fresh({
+        name: "with-repo",
+        repository: "repoexists"
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals(s.package_has_repo[0], 1.0, 
             'Correct scoring for package with repo');
+
         cb();
       });
     }
@@ -78,22 +102,30 @@ tap.test('package has sufficient description', function(t) {
 
   async.series([
     function(cb){
-
-      var obj = new PackageChecker('../../t/checkers/package/without-sufficient-description.json');
+      var obj = fresh({
+        name: "without-sufficient-description",
+        description: "yeah no"
+      });
       obj.score(function(score) {
-        t.equals(score.scores.package_has_sufficient_description[0], 0.0, 
+        var s = score.scores;
+        t.equals(s.package_has_sufficient_description[0], 0.0, 
             'Correct scoring for package without repo');
-        t.equals(score.scores.package_has_sufficient_description[1], 2.0, 
+        t.equals(s.package_has_sufficient_description[1], 2.0, 
             'Correct possible score for package without repo');
+
         cb();
       });
     },
     function(cb){
-
-      var obj2 = new PackageChecker('../../t/checkers/package/with-sufficient-description.json');
-      obj2.score(function(score) {
-        t.equals(score.scores.package_has_sufficient_description[0], 2.0, 
+      var obj = fresh({
+        name: 'is-sufficient-description',
+        description: "This is an exmaple of a descritpion which is sufficient for kwalitee"
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals(s.package_has_sufficient_description[0], 2.0, 
             'Correct scoring for package with repo');
+
         cb();
       });
     }
@@ -107,33 +139,45 @@ tap.test('package has spdx licensing', function(t) {
 
   async.series([
     function(cb){
-
-      var obj = new PackageChecker('../../t/checkers/package/without-spdx-license.json');
+      var obj = fresh({
+        name: "without-spdx-license",
+        license: "MegaCorpLicense"
+      });
       obj.score(function(score) {
-        t.equals(score.scores.package_has_spdx_license[0], 0.0, 
+        var s = score.scores;
+        t.equals(s.package_has_spdx_license[0], 0.0, 
             'Correct scoring for package without spdx license');
-        t.equals(score.scores.package_has_spdx_license[1], 4.0, 
+        t.equals(s.package_has_spdx_license[1], 4.0, 
             'Correct possible score for package without spdx license');
+
         cb();
       });
     },
     function(cb){
-
-      var obj2 = new PackageChecker('../../t/checkers/package/with-spdx-not-osi-license.json');
-      obj2.score(function(score) {
-        t.equals(score.scores.package_has_spdx_license[0], 3.0, 
+      var obj = fresh({
+        name: "spdx-non-osi-license",
+        license: "YPL-1.0"
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals(s.package_has_spdx_license[0], 3.0, 
             'Correct scoring for package with spdx license (non-osi-approved)');
+
         cb();
       });
     },
     function(cb) {
-      var obj3 = new PackageChecker('../../t/checkers/package/with-spdx-osi-license.json');
-      obj3.score(function(score) {
-        t.equals(score.scores.package_has_spdx_license[0], 4.0, 
+      var obj = fresh({
+        name: "valid-spdx-osi",
+        license: "MIT"
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals(s.package_has_spdx_license[0], 4.0, 
             'Correct scoring for package with spdx license (osi-approved)');
+        
         cb();
       });
-
     }
   ], function(err) {
     t.done();
@@ -145,22 +189,30 @@ tap.test('package has valid semver', function(t) {
 
   async.series([
     function(cb){
-
-      var obj = new PackageChecker('../../t/checkers/package/without-valid-semver.json');
+      var obj = fresh({
+        name: "not-valid-semver",
+        version: "ahahahaha"
+      });
       obj.score(function(score) {
-        t.equals(score.scores.package_has_valid_semver[0], 0.0, 
+        var s = score.scores;
+        t.equals(s.package_has_valid_semver[0], 0.0, 
             'Correct scoring for package without valid semver');
-        t.equals(score.scores.package_has_valid_semver[1], 6.0, 
+        t.equals(s.package_has_valid_semver[1], 6.0, 
             'Correct possible score for package without valid semver');
+        
         cb();
       });
     },
     function(cb){
-
-      var obj2 = new PackageChecker('../../t/checkers/package/with-valid-semver.json');
-      obj2.score(function(score) {
-        t.equals(score.scores.package_has_valid_semver[0], 6.0, 
+      var obj = fresh({
+        name: "valid-semver",
+        version: "1.2.3"
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals(s.package_has_valid_semver[0], 6.0, 
             'Correct scoring for package with valid semver');
+        
         cb();
       });
     },
@@ -174,22 +226,30 @@ tap.test('package has minimum keywords', function(t) {
 
   async.series([
     function(cb){
-
-      var obj = new PackageChecker('../../t/checkers/package/without-minimum-keywords.json');
+      var obj = fresh({
+        name: "without-minimum-keywords",
+        keywords: [ 'just-one' ]
+      });
       obj.score(function(score) {
-        t.equals(score.scores.package_has_minimum_keywords[0], 0.0, 
+        var s = score.scores;
+        t.equals(s.package_has_minimum_keywords[0], 0.0, 
             'Correct scoring for package without minimum keywords');
-        t.equals(score.scores.package_has_minimum_keywords[1], 2.0, 
+        t.equals(s.package_has_minimum_keywords[1], 2.0, 
             'Correct possible score for package without minimum keywords');
+        
         cb();
       });
     },
     function(cb){
-
-      var obj2 = new PackageChecker('../../t/checkers/package/with-minimum-keywords.json');
-      obj2.score(function(score) {
-        t.equals(score.scores.package_has_minimum_keywords[0], 2.0, 
+      var obj = fresh({
+        name: "with-minimum-keywords",
+        keywords: [ "one", "two", "three", "more" ]
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals(s.package_has_minimum_keywords[0], 2.0, 
             'Correct scoring for package with minimum keywords');
+        
         cb();
       });
     },
@@ -203,22 +263,31 @@ tap.test('package has author', function(t) {
 
   async.series([
     function(cb){
-
-      var obj = new PackageChecker('../../t/checkers/package/without-author.json');
+      var obj = fresh({
+        name: "no-author"
+      });
       obj.score(function(score) {
-        t.equals(score.scores.package_has_author[0], 0.0, 
+        var s = score.scores;
+        t.equals(s.package_has_author[0], 0.0, 
             'Correct scoring for package without author');
-        t.equals(score.scores.package_has_author[1], 1.0, 
+        t.equals(s.package_has_author[1], 1.0, 
             'Correct possible score for package without author');
+
         cb();
       });
     },
     function(cb){
-
-      var obj2 = new PackageChecker('../../t/checkers/package/with-author.json');
-      obj2.score(function(score) {
-        t.equals(score.scores.package_has_author[0], 1.0, 
+      var obj = fresh({
+        name: "with-author",
+        author: {
+          name: "A. Uthor"
+        }
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals(s.package_has_author[0], 1.0, 
             'Correct scoring for package with author');
+
         cb();
       });
     },
@@ -232,22 +301,32 @@ tap.test('package has test script', function(t) {
 
   async.series([
     function(cb){
-
-      var obj = new PackageChecker('../../t/checkers/package/without-test-script.json');
+      var obj = fresh({
+        name: "without-test-script"
+      });
       obj.score(function(score) {
-        t.equals(score.scores.package_has_test_script[0], 0.0, 
+        var s = score.scores;
+        t.equals(s.package_has_test_script[0], 0.0, 
             'Correct scoring for package without test script');
-        t.equals(score.scores.package_has_test_script[1], 5.0, 
+        t.equals(s.package_has_test_script[1], 5.0, 
             'Correct possible score for package without test script');
+
         cb();
       });
     },
     function(cb){
 
-      var obj2 = new PackageChecker('../../t/checkers/package/with-test-script.json');
-      obj2.score(function(score) {
-        t.equals(score.scores.package_has_test_script[0], 5.0, 
+      var obj = fresh({
+        name: "with-test-script",
+        scripts: {
+          test: "echo 'we have some sort of test script here'"
+        }
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals(s.package_has_test_script[0], 5.0, 
             'Correct scoring for package with test script');
+
         cb();
       });
     },
