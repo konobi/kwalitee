@@ -66,3 +66,44 @@ tap.test('test folder exists', function(t) {
 
 });
 
+tap.test('test script is not default', function(t) {
+
+  async.series([
+    function(cb){
+      var obj = fresh({
+        name: 'test-is-default',
+        scripts: {
+          "test": "echo 'bad author, no default' && exit 1"
+        }
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals( s.test_script_is_not_default[0], 0.0, 
+            'Correct scoring for default test script');
+        t.equals( s.test_script_is_not_default[1], 10.0, 
+            'Correct possible score for non default test script');
+
+        cb();
+      });
+    },
+    function(cb){
+      var obj = fresh({
+        name: 'test-is-not-default',
+        scripts: {
+          "test": "echo 'not the default test'"
+        }
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals( s.test_script_is_not_default[0], 10.0, 
+            'Correct scoring for non default test script');
+
+        cb();
+      });
+    }
+  ], function(err) {
+    t.done();
+  });
+
+});
+
