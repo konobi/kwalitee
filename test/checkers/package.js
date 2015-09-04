@@ -4,7 +4,7 @@ var async = require('async');
 var path = require('path');
 
 var PackageChecker = require('../../lib/checkers/package');
-var fake_path = '../../t/checkers/package/test-dir/';
+var fake_path = '../../test/checkers/package/test-dir/';
 function reset () {
   delete require.cache[ path.resolve(fake_path) ];
 }

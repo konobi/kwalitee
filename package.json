@@ -4,7 +4,7 @@
   "description": "Kwalitee scoring for npm packages, providing tooling to help package authors",
   "main": "lib/index.js",
   "scripts": {
-    "test": "tap t"
+    "test": "tap test"
   },
   "author": "",
   "license": "MIT",
