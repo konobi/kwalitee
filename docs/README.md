@@ -36,8 +36,8 @@ Kwalitee uses a group of "checkers" to validate packages. These are broken out i
  * [Package](docs/checkers/Package.md): static checks based on package.json
  * [Tests](docs/checkers/Tests.md): checks based around package testing
 
-    If you have additional checks that you would like to see here, please submit a PR againt [the github repository](https://github.com/konobi/kwalitee/). While issues are appreciated,
-    due to the nature of how specific these checks must be, PRs are far more likely to be brought in in a timely manor.
+> If you have additional checks that you would like to see here, please submit a PR againt [the github repository](https://github.com/konobi/kwalitee/). While issues are appreciated,
+> due to the nature of how specific these checks must be, PRs are far more likely to be brought in in a timely manor.
 
 ## Additional
 

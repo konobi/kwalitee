@@ -62,6 +62,41 @@ tap.test('package does not include name', function(t) {
 
 });
 
+tap.test('package does not include "js" in name', function(t) {
+
+  async.series([
+    function(cb){
+      var obj = fresh({
+        name: 'this-should-fail-js'
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals( s.packagename_does_not_include_js[0], 0.0, 
+            'Correct scoring for package with "js" in name');
+        t.equals( s.packagename_does_not_include_js[1], 1.0, 
+            'Correct possible score for package with "js" in name');
+
+        cb();
+      });
+    },
+    function(cb){
+      var obj = fresh({
+        name: 'this-is-okay-as-a-name'
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals( s.packagename_does_not_include_js[0], 1.0, 
+            'Correct scoring for package without "js" in name');
+
+        cb();
+      });
+    }
+  ], function(err) {
+    t.done();
+  });
+
+});
+
 tap.test('package has repo', function(t) {
 
   async.series([

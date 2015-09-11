@@ -12,6 +12,17 @@ node_shinypackage
 shinypackage-node
 shinypackage_node
 ```
+
+## packagename_does_not_include_js **[1.0]**
+
+Node and NPM have commonly stated that it is redundant to use a "js" prefix or suffix in the name of a package, since it is a given that it is JS. The following patterns will be cause a negative scoring:
+```
+js-shinypackage
+js_shinypackage
+shinypackage-js
+shinypackage_js
+```
+
 ## package_has_repo **[1.0]**
 
 Packages that are published to the NPM registry should have a repository assigned in package.json so that users can refer to commit history, changes, branches, etc.
@@ -47,3 +58,5 @@ NPM prefers to have the package author to be defined in the package.json.
 ## package_has_test_script **[5.0]**
 
 Well tested packages are a great boon for users, however there are many different test frameworks all with different ways to invoke tests to be run. To help all users, we want to be able to run all applicable tests by invoking `npm test` for a package. This check ensures that the "test" npm script is defined in the package.json.
+
+
