@@ -81,4 +81,41 @@ tap.test('Addon requires nan and bindings as dependencies', function(t) {
 
 });
 
+tap.test('Addon requires node-gyp as devdependency', function(t) {
+
+  async.series([
+    function(cb){
+      var obj = fresh({
+        name: 'addon-without-devdependencies'
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals( s.addon_depends_on_nodegyp_devdependency[0], 0.0, 
+            'Correct scoring for addon without devdependencies');
+        t.equals( s.addon_depends_on_nodegyp_devdependency[1], 3.0, 
+            'Correct possible score for addon with node-gyp devdependency');
+
+        cb();
+      });
+    },
+    function(cb){
+      var obj = fresh({
+        name: 'addon-with-nodegyp-devdependency',
+        devDependencies: {
+          "node-gyp": "2.4.6"
+        }
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals( s.addon_depends_on_nodegyp_devdependency[0], 3.0, 
+            'Correct scoring for addon with node-gyp devdependency');
+
+        cb();
+      });
+    }
+  ], function(err) {
+    t.done();
+  });
+
+});
 
