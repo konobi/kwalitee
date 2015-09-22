@@ -1,6 +1,6 @@
 {
   "name": "kwalitee",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0",
   "description": "Kwalitee scoring for npm packages, providing tooling to help package authors",
   "main": "lib/index.js",
   "scripts": {

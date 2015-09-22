@@ -43,6 +43,10 @@ NPM now expects the license field in package.json to match [SPDX specifications]
 
 The version field now needs to comply with the [Semantic Versioning](http://semver.org) specifications. Since this field is used for version comparisons for dependencies, etc. it is scored highly to encourage authors to switch to this versioning method as soon as possible.
 
+## package_has_valid_semver_with_base_value **[3.0]**
+
+Due to how the semver spec works, NPM has decided that any version number for a package that is less than '1.0.0' is problematic. For this reason, we ensure that the version is equal to or higher than this. This is also now the default behaviour of `npm init`.
+
 ## package_has_minimum_keywords **[2.0]**
 
 Packages on the NPM registry use keywords assigned from the "keywords" fields for extra information for searching and to provide extra indicators as to a packages use. As many packages may have similar names but entirely different uses, we want to make sure that we have at least a few keywords for a package.

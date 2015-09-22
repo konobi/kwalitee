@@ -257,6 +257,41 @@ tap.test('package has valid semver', function(t) {
 
 });
 
+tap.test('package uses semver of 1.0.0 or above', function(t) {
+  async.series([
+    function(cb){
+      var obj = fresh({
+        name: "valid-semver-not-1.0.0-or-over",
+        version: "0.2.3"
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals(s.package_has_valid_semver_with_base_value[0], 0.0, 
+            'Correct scoring for package without valid semver');
+        t.equals(s.package_has_valid_semver_with_base_value[1], 3.0, 
+            'Correct possible score for package without valid semver');
+        
+        cb();
+      });
+    },
+    function(cb){
+      var obj = fresh({
+        name: "valid-semver-over-1.0.0",
+        version: "1.2.3"
+      });
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals(s.package_has_valid_semver_with_base_value[0], 3.0, 
+            'Correct scoring for package with valid semver');
+        
+        cb();
+      });
+    },
+  ], function(err) {
+    t.done();
+  });
+});
+
 tap.test('package has minimum keywords', function(t) {
 
   async.series([
