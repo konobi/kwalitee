@@ -3,9 +3,13 @@ Tests Checker
 
 This checker is used to assess various practices around testing for packages.
 
+## package_json_has_directories_test **[10.0]**
+
+Package.json should have the "directories.test" key, which should point to the directory containing the test scripts and data for the package. 
+
 ## test_folder_exists **[10.0]**
 
-Within the package there should be a folder "test" that contains test scripts and data for the package. The decision of the name is based on what is currently most common on the NPM registry. Use of a folder is preferred for simple separation of concerns.
+The folder specified by package.json's "directories.test" should exist. If it doesn't, the directory "test" is used as a default.
 
 ## test_script_is_not_default **[10.0]**
 
