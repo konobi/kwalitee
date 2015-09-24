@@ -1,5 +1,5 @@
 # kwalitee
-### Version 1.0.0-rc1
+### Version 1.0.0
 
 ## Description
 
