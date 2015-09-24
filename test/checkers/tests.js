@@ -44,7 +44,10 @@ tap.test('test folder exists', function(t) {
             'Correct scoring for package without test folder');
         t.equals( s.test_folder_exists[1], 10.0, 
             'Correct possible score for package without test folder');
-
+        t.equals( s.package_json_has_directories_test[0], 0.0,
+            'Correct scoring for package without package.json directories.tests');
+        t.equals( s.package_json_has_directories_test[1], 10.0, 
+            'Correct possible score for package with package.json directories.tests, no matching folder');
         cb();
       });
     },
@@ -57,6 +60,32 @@ tap.test('test folder exists', function(t) {
         t.equals( s.test_folder_exists[0], 10.0, 
             'Correct scoring for package with test folder');
 
+        cb();
+      });
+    },
+    function(cb){
+      var obj = fresh({
+        directories:{ test: 'foo' }
+      }, "test-folder-does-not-exist-with-pjson");
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals( s.package_json_has_directories_test[0], 10.0, 
+            'Correct scoring for package with package.json directories.tests, no matching folder');
+        t.equals( s.test_folder_exists[0], 0.0,
+            'Correct scoring for package without test folder');
+        cb();
+      });
+    },
+    function(cb){
+      var obj = fresh({
+        directories:{ test: 'foo' }
+      }, "test-folder-does-exist-with-pjson");
+      obj.score(function(score) {
+        var s = score.scores;
+        t.equals( s.package_json_has_directories_test[0], 10.0, 
+            'Correct scoring for package with package.json directories.tests, no matching folder');
+        t.equals( s.test_folder_exists[0], 10.0,
+            'Correct scoring for package with test folder');
         cb();
       });
     }
